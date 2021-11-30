@@ -305,4 +305,95 @@ async def youtube_dl_call_back(bot, update):
                     width=width,
                     height=height,
                     supports_streaming=True,
-                    # reply_markup=
+                    # reply_markup=reply_markup,
+                    reply_to_message_id=update.message.reply_to_message.message_id,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        Translation.UPLOAD_START,
+                        update.message,
+                        start_time
+                    )
+                )
+            elif tg_send_type == "vm":
+                await bot.send_video_note(
+                    chat_id=update.message.chat.id,
+                    video_note=download_directory,
+                    duration=duration,
+                    length=width,
+                    thumb=thumb_image_path,
+                    reply_to_message_id=update.message.reply_to_message.message_id,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        Translation.UPLOAD_START,
+                        update.message,
+                        start_time
+                    )
+                )
+            elif tg_send_type == "video":
+                await bot.send_video(
+                    chat_id=update.message.chat.id,
+                    video=download_directory,
+                    caption=description,
+                    parse_mode="HTML",
+                    duration=duration,
+                    width=width,
+                    height=height,
+                    supports_streaming=True,
+                    # reply_markup=reply_markup,
+                    thumb=thumb_image_path,
+                    reply_to_message_id=update.message.reply_to_message.message_id,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        Translation.UPLOAD_START,
+                        update.message,
+                        start_time
+                    )
+                )
+            else:
+                logger.info("Did this happen? :\\")
+            end_two = datetime.now()
+            time_taken_for_upload = (end_two - end_one).seconds
+            #
+            '''media_album_p = []
+            if images is not None:
+                i = 0
+                caption = "JOIN : https://t.me/TGBotsCollection \n For the List of Telegram Bots"
+                if is_w_f:
+                    caption = "/upgrade to Plan D to remove the watermark\nJOIN : https://t.me/TGBotsCollection \n For the List of Telegram Bots"
+                for image in images:
+                    if os.path.exists(image):
+                        if i == 0:
+                            media_album_p.append(
+                                pyrogram.types.InputMediaPhoto(
+                                    media=image,
+                                    caption=caption,
+                                    parse_mode="html"
+                                )
+                            )
+                        else:
+                            media_album_p.append(
+                                pyrogram.types.InputMediaPhoto(
+                                    media=image
+                                )
+                            )
+                        i = i + 1
+            await bot.send_media_group(
+                chat_id=update.message.chat.id,
+                disable_notification=True,
+                reply_to_message_id=update.message.message_id,
+                media=media_album_p
+            )'''
+            #
+            try:
+                os.remove(thumb_image_path)
+                shutil.rmtree(tmp_directory_for_each_user)
+            except:
+                pass
+
+            await bot.edit_message_text(
+                text=Translation.AFTER_SUCCESSFUL_UPLOAD_MSG_WITH_TS.format(time_taken_for_download, time_taken_for_upload),
+                chat_id=update.message.chat.id,
+                message_id=update.message.message_id,
+                disable_web_page_preview=True
+            )
+
